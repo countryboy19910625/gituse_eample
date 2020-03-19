@@ -12,6 +12,9 @@ public:
 	void DoTask() override;
  	                 
 	void TimerHandle(UINT_PTR nIDEvent) override;
+	
+	
+	#this is what I have fixed here 
 
 	
 };

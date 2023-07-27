@@ -6,51 +6,51 @@
 #include "JsonTools.h"
 #include <boost/foreach.hpp>
 
-const int MAX_RETRY = 4;  //ÈÎÎñÒì³£×î¶àÖØÐÂÏÂ·¢4´Î
-
+const int MAX_RETRY = 4;  //ï¿½ï¿½ï¿½ï¿½ï¿½ì³£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½4ï¿½ï¿½
+//æˆ‘æ¬²ä¹˜é£Žå½’åŽ»ï¼Œåˆæç¼æ¥¼çŽ‰å®‡ï¼Œèµ·èˆžå¼„æ¸…å½±ï¼Œä½•ä¼¼åœ¨äººé—´
 CDsSejc::~CDsSejc()
 {
 }
 
 void CDsSejc::DoTask()
 {
-	//ÏÈ½ØÍ¼£¬ºóÐ£ÑéË°¶î
-	LOG_FUNC_INFO("Éê±¨×´Ì¬ÎªÒÑÉê±¨£¬Ö±½Ó½øÐÐË°¶îÐ£Ñé");
+	//ï¿½È½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ï¿½Ë°ï¿½ï¿½
+	LOG_FUNC_INFO("ï¿½ê±¨×´Ì¬Îªï¿½ï¿½ï¿½ê±¨ï¿½ï¿½Ö±ï¿½Ó½ï¿½ï¿½ï¿½Ë°ï¿½ï¿½Ð£ï¿½ï¿½");
 
-	TString strTaxName = IdToTaxName(m_spCurrentTaskGroup->m_strGroupId);   //ÕâÀï´ò¿ªµÄÊÇÉê±¨Ò³ÃæµÄ±¨±íÃû³Æ
+	TString strTaxName = IdToTaxName(m_spCurrentTaskGroup->m_strGroupId);   //ï¿½ï¿½ï¿½ï¿½ò¿ªµï¿½ï¿½ï¿½ï¿½ê±¨Ò³ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (strTaxName.empty())
 	{
-		NotifyDone(ExcuteFailed, TEXT("²»Ö§³ÖµÄÈÎÎñID£º¡¾") + m_spCurrentTaskGroup->m_strGroupId + TEXT("¡¿"));
+		NotifyDone(ExcuteFailed, TEXT("ï¿½ï¿½Ö§ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½IDï¿½ï¿½ï¿½ï¿½") + m_spCurrentTaskGroup->m_strGroupId + TEXT("ï¿½ï¿½"));
 		return;
 	}
 
-	//1¡¢½ØÍ¼
+	//1ï¿½ï¿½ï¿½ï¿½Í¼
 	if (!GetHZPicBase64(NULL, m_SnapshotData))
 	{
-		NotifyDone(ExcuteFailed, "½ØÍ¼Ê§°Ü£¡");
+		NotifyDone(ExcuteTaxPro, "ï¿½ï¿½Í¼Ê§ï¿½Ü£ï¿½");
 		return;
 	}
-	LOG_FUNC_INFO("Éê±¨ÄÉË°Ò³ÃæÉê±¨Íê³É½ØÍ¼³É¹¦£¡");
+	LOG_FUNC_INFO("ï¿½ê±¨ï¿½ï¿½Ë°Ò³ï¿½ï¿½ï¿½ê±¨ï¿½ï¿½É½ï¿½Í¼ï¿½É¹ï¿½ï¿½ï¿½");
 
-	//2¡¢ÅÐ¶¨ÊÇ·ñÐèÒª»ØÖ´
+	//2ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Òªï¿½ï¿½Ö´
 	TString rtnJson;
 	IS_N_RET(LoadJsFile(EST_STATE_SBNS, IDR_JS_DS_CHECK_DECL), sLoadJsErrMsg);
 	if (!InvokeScriptString(EST_STATE_SBNS, rtnJson, TEXT("SBNS_check_tax_decl"), strTaxName))
 	{
 		m_OpenWebStateID = -1;
-		AddImage("Î´ÕÒµ½", GetWebState(EST_STATE_SBNS)->GetHwnd());
+		AddImage("Î´ï¿½Òµï¿½", GetWebState(EST_STATE_SBNS)->GetHwnd());
 		NotifyDone(ExcuteFailedTaxation, rtnJson);
 		return;
 	}
 	TString strStatus = CJsonTools::GetJsonVal(rtnJson, TEXT("status"));
-//	m_iCode = boost::contains(strStatus, "ÒÑÉê±¨(ÒÑµ¼Èë)") ? DeclaredDone : NeedRecvReceipt;
+//	m_iCode = boost::contains(strStatus, "ï¿½ï¿½ï¿½ê±¨(ï¿½Ñµï¿½ï¿½ï¿½)") ? DeclaredDone : NeedRecvReceipt;
 	m_iCode = DeclaredDone;
 
-	//3¡¢»ñÈ¡Ë°¶îÐÅÏ¢
-	LOG_FUNC_INFO("´ò¿ªË°±í¡¾%s¡¿»ñÈ¡Ë°¶îÐÅÏ¢", strTaxName.c_str());
+	//3ï¿½ï¿½ï¿½ï¿½È¡Ë°ï¿½ï¿½ï¿½ï¿½Ï¢
+	LOG_FUNC_INFO("ï¿½ï¿½Ë°ï¿½ï¿½ï¿½ï¿½%sï¿½ï¿½ï¿½ï¿½È¡Ë°ï¿½ï¿½ï¿½ï¿½Ï¢", strTaxName.c_str());
 	if (!InvokeScriptString(EST_STATE_SBNS, rtnJson, TEXT("yzf_click_link_text"), TEXT("a"), strTaxName))
 	{
-		RetryOpertaion("Éê±¨ÄÉË°Ò³Ãæµã»÷Éê±¨±íÊ§°Ü");
+		RetryOpertaion("ï¿½ê±¨ï¿½ï¿½Ë°Ò³ï¿½ï¿½ï¿½ï¿½ï¿½ê±¨ï¿½ï¿½Ê§ï¿½ï¿½");
 		return;
 	}
 }
@@ -58,7 +58,7 @@ void CDsSejc::DoTask()
 
 void CDsSejc::TimerHandle(UINT_PTR nIDEvent)
 {
-	TString strTaxName = IdToTaxName(m_spCurrentTaskGroup->m_strGroupId);   //ÕâÀï´ò¿ªµÄÊÇÉê±¨Ò³ÃæµÄ±¨±íÃû³Æ
+	TString strTaxName = IdToTaxName(m_spCurrentTaskGroup->m_strGroupId);   //ï¿½ï¿½ï¿½ï¿½ò¿ªµï¿½ï¿½ï¿½ï¿½ê±¨Ò³ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	m_pTaskCtrl->KillTimer(nIDEvent);
 	switch (nIDEvent)
 	{
@@ -66,15 +66,15 @@ void CDsSejc::TimerHandle(UINT_PTR nIDEvent)
 	{
 		if (!m_bflag)
 		{
-			//ÊÂÊµÉÏÖ»ÓÐÓ¡»¨Ë°²ÅÓÐÖÐ¼äÒ³Ãæ
-			LOG_FUNC_INFO("µ±Ç°Êµ¼Ê´¦ÓÚ¡¾%s¡¿ÖÐ¼äÒ³Ãæ", strTaxName.c_str());
+			//ï¿½ï¿½Êµï¿½ï¿½Ö»ï¿½ï¿½Ó¡ï¿½ï¿½Ë°ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼ï¿½Ò³ï¿½ï¿½
+			LOG_FUNC_INFO("ï¿½ï¿½Ç°Êµï¿½Ê´ï¿½ï¿½Ú¡ï¿½%sï¿½ï¿½ï¿½Ð¼ï¿½Ò³ï¿½ï¿½", strTaxName.c_str());
 			TString strItem = m_spCurrentTaskGroup->m_strSsqs + "~" + m_spCurrentTaskGroup->m_strSsqz;
 			TString js = "$('a:contains(" + strItem + ")')[0].click()";
 			if (!m_spCurrentState->ExcuteScript(js))
 			{
 				if (!m_spCurrentState->ExcuteScript(js))
 				{
-					NotifyDone(ExcuteFailed, "ÈÎÎñÖØÊÔµ½´ïÉÏÏÞ£¡µã»÷ÖÐ¼äÒ³ÃæÁÐ±íÊ§°Ü,Çë¼ì²éÊÇ·ñÊÇÈÕÆÚ²»¶Ô£¡");
+					NotifyDone(ExcuteFailed, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ£ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼ï¿½Ò³ï¿½ï¿½ï¿½Ð±ï¿½Ê§ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú²ï¿½ï¿½Ô£ï¿½");
 					return;
 				}
 			}
@@ -84,13 +84,13 @@ void CDsSejc::TimerHandle(UINT_PTR nIDEvent)
 
 	case ID_TIMER_TAX_DECL_TABLE_OPEN:
 	{
-		LOG_FUNC_INFO("µ±Ç°Êµ¼Ê´¦ÓÚ¡¾%s¡¿µ¼º½Ò³Ãæ", strTaxName.c_str());
+		LOG_FUNC_INFO("ï¿½ï¿½Ç°Êµï¿½Ê´ï¿½ï¿½Ú¡ï¿½%sï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò³ï¿½ï¿½", strTaxName.c_str());
 		TString strMsg;
-		//ÕâÀï´ò¿ªµÄÓ¦¸Ãµ¼º½Ò³ÃæÉÏµÄÉê±¨±í
+		//ï¿½ï¿½ï¿½ï¿½ò¿ªµï¿½Ó¦ï¿½Ãµï¿½ï¿½ï¿½Ò³ï¿½ï¿½ï¿½Ïµï¿½ï¿½ê±¨ï¿½ï¿½
 		int iCount = 0;
 		while (iCount++ < 3)
 		{
-			if (IsExistKeyWord(_T("Éê±¨"), _T("a")))
+			if (IsExistKeyWord(_T("ï¿½ê±¨"), _T("a")))
 			{
 				break;
 			}
@@ -98,16 +98,16 @@ void CDsSejc::TimerHandle(UINT_PTR nIDEvent)
 		}
 		if (iCount >= 3)
 		{
-			LOG_FUNC_INFO("¡¾%s¡¿µ¼º½Ò³Ãæ¼ÓÔØÊ§°Ü£¡", strTaxName.c_str());
-			RetryOpertaion("µ¼º½Ò³Ãæ¼ÓÔØÊ§°Ü");
+			LOG_FUNC_INFO("ï¿½ï¿½%sï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½", strTaxName.c_str());
+			RetryOpertaion("ï¿½ï¿½ï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½");
 			return;
 		}
 
-		if (!m_spCurrentState->ExcuteScript("$(\"a:contains(Éê±¨)\")[0].click()"))
+		if (!m_spCurrentState->ExcuteScript("$(\"a:contains(ï¿½ê±¨)\")[0].click()"))
 		{
-			if (!m_spCurrentState->ExcuteScript("$(\"a:contains(Éê±¨)\")[0].click()"))
+			if (!m_spCurrentState->ExcuteScript("$(\"a:contains(ï¿½ê±¨)\")[0].click()"))
 			{
-				RetryOpertaion("µ¼º½Ò³Ãæµã»÷¡¾Éê±¨¡¿Ê§°Ü");
+				RetryOpertaion("ï¿½ï¿½ï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê±¨ï¿½ï¿½Ê§ï¿½ï¿½");
 				return;
 			}
 		}
@@ -116,14 +116,14 @@ void CDsSejc::TimerHandle(UINT_PTR nIDEvent)
 
 	case ID_TIMER_TAX_DECL_TABLE_COMPLETE:
 	{
-		LOG_FUNC_INFO("µ±Ç°Êµ¼Ê´¦ÓÚ¡¾%s¡¿´ò¿ªÒ³Ãæ", strTaxName.c_str());
+		LOG_FUNC_INFO("ï¿½ï¿½Ç°Êµï¿½Ê´ï¿½ï¿½Ú¡ï¿½%sï¿½ï¿½ï¿½ï¿½Ò³ï¿½ï¿½", strTaxName.c_str());
 
-		//Ìí¼ÓÒ»¸öË°±í¼ÓÔØÍêÈ«µÄÌõ¼þ 
+		//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ë°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 		MsgSleep(3000);
 		int iCount = 0;
 		while (iCount++ < 3)
 		{
-			if (IsExistKeyWord(_T("È«Éê±¨"), _T("a")))
+			if (IsExistKeyWord(_T("È«ï¿½ê±¨"), _T("a")))
 			{
 				break;
 			}
@@ -131,8 +131,8 @@ void CDsSejc::TimerHandle(UINT_PTR nIDEvent)
 		}
 		if (iCount >= 3)
 		{
-			LOG_FUNC_INFO("¡¾%s¡¿ÌîÐ´Ò³Ãæ¼ÓÔØÊ§°Ü£¡", strTaxName.c_str());
-			RetryOpertaion("ÌîÐ´Ò³Ãæ¼ÓÔØÊ§°Ü");
+			LOG_FUNC_INFO("ï¿½ï¿½%sï¿½ï¿½ï¿½ï¿½Ð´Ò³ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½", strTaxName.c_str());
+			RetryOpertaion("ï¿½ï¿½Ð´Ò³ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½");
 			return;
 		}
 
@@ -155,20 +155,20 @@ HRESULT CDsSejc::OnAjaxComplete(int iStatus, const TString& strUrl, const TStrin
 {
 	if (boost::contains(strUrl, TEXT("etax.zhejiang.chinatax.gov.cn/zjgfzjdzswjsbweb/pages/sb/nssb/sb_nssb.html")))
 	{
-		//DoNothing but cannot  be lacked//Éê±¨ÄÉË°Ò³Ãæ,ÍøÖ·ºÍ´ò¿ªÒ³ÃæÍøÖ·ÓÐ²¿·ÖÖØºÏ
+		//DoNothing but cannot  be lacked//ï¿½ê±¨ï¿½ï¿½Ë°Ò³ï¿½ï¿½,ï¿½ï¿½Ö·ï¿½Í´ï¿½Ò³ï¿½ï¿½ï¿½ï¿½Ö·ï¿½Ð²ï¿½ï¿½ï¿½ï¿½Øºï¿½
 	}
-	else if (boost::contains(strUrl, TEXT("pages/sb/nssb/sb_dcsb.html")))  //½øÈëÁËÖÐ¼äÒ³Ãæ
+	else if (boost::contains(strUrl, TEXT("pages/sb/nssb/sb_dcsb.html")))  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼ï¿½Ò³ï¿½ï¿½
 	{
 		m_pTaskCtrl->SetTimer(ID_TIMER_TAX_DECL_LIST_COMPLETE, SLEEP_AJAX_COMPLETE_TIME);
 	}
-	else if (boost::contains(strUrl, TEXT("sb/nssb/bdlb.html")))  //½øÈëÁËµ¼º½ËµÃ÷Ò³Ãæ
+	else if (boost::contains(strUrl, TEXT("sb/nssb/bdlb.html")))  //ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½Ëµï¿½ï¿½Ò³ï¿½ï¿½
 	{
 		m_bflag = true;
 		m_pTaskCtrl->SetTimer(ID_TIMER_TAX_DECL_TABLE_OPEN, SLEEP_AJAX_COMPLETE_TIME);
 	}
 	else if (boost::contains(strUrl, TEXT("/zjgfcsszjdzswjsbweb/pages/sb"))
 		|| boost::contains(strUrl, TEXT("zjgfzjdzswjsbweb/pages/sb"))
-		|| boost::contains(strUrl, TEXT("dzswjsbwebxyw/pages/sb")))  //½øÈë´ò¿ªÒ³Ãæ
+		|| boost::contains(strUrl, TEXT("dzswjsbwebxyw/pages/sb")))  //ï¿½ï¿½ï¿½ï¿½ï¿½Ò³ï¿½ï¿½
 	{
 		m_pTaskCtrl->SetTimer(ID_TIMER_TAX_DECL_TABLE_COMPLETE, SLEEP_AJAX_COMPLETE_TIME);
 	}
@@ -179,14 +179,14 @@ HRESULT CDsSejc::OnAjaxComplete(int iStatus, const TString& strUrl, const TStrin
 
 void CDsSejc::SeJc()
 {
-	LOG_FUNC_INFO("¡¾»ñÈ¡²¢ÇÒ±È¶ÔË°¶î¡¿");
+	LOG_FUNC_INFO("ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½Ò±È¶ï¿½Ë°ï¿½î¡¿");
 	TString strMsg;
 	TString strSz = TEXT("");
 	TString strWebValue = "";
 
-	if (m_spCurrentTaskGroup->m_strGroupId == _T("ZHEJIANGDS_CJRJYBZJ_SBB")) { strSz = TEXT("²Ð±£½ð"); }
-	if (m_spCurrentTaskGroup->m_strGroupId == _T("ZHEJIANGDS_TY_SBB")) { strSz = TEXT("Í¨ÓÃÉê±¨"); }
-	if (m_spCurrentTaskGroup->m_strGroupId == _T("ZHEJIANGDS_SBDWJFR_SBB")) { strSz = TEXT("Éç±£"); }
+	if (m_spCurrentTaskGroup->m_strGroupId == _T("ZHEJIANGDS_CJRJYBZJ_SBB")) { strSz = TEXT("ï¿½Ð±ï¿½ï¿½ï¿½"); }
+	if (m_spCurrentTaskGroup->m_strGroupId == _T("ZHEJIANGDS_TY_SBB")) { strSz = TEXT("Í¨ï¿½ï¿½ï¿½ê±¨"); }
+	if (m_spCurrentTaskGroup->m_strGroupId == _T("ZHEJIANGDS_SBDWJFR_SBB")) { strSz = TEXT("ï¿½ç±£"); }
 
 	if ( m_spCurrentTaskGroup->m_strGroupId == _T("ZHEJIANGDS_CJRJYBZJ_SBB")
 		|| m_spCurrentTaskGroup->m_strGroupId == _T("ZHEJIANGDS_TY_SBB"))
@@ -195,17 +195,17 @@ void CDsSejc::SeJc()
 		const auto& taskItem = m_pTaskCtrl->GetTaskItemById(strTaskId);
 		BOOST_FOREACH(auto& cell, taskItem->m_vecVerifyCells)
 		{
-			TString yspzmc = cell.m_strAttrId;     //Ó¦Ë°Æ¾Ö¤Ãû³Æ
+			TString yspzmc = cell.m_strAttrId;     //Ó¦Ë°Æ¾Ö¤ï¿½ï¿½ï¿½ï¿½
 			TString column = cell.m_mapAttrs["col"];
 			TString TaxName = cell.m_strTaxName;
 
-			//¸ù¾ÝÐÅÏ¢ÕÒµ½¶ÔÓ¦µ¥Ôª¸ñ
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½Òµï¿½ï¿½ï¿½Ó¦ï¿½ï¿½Ôªï¿½ï¿½
 			if (cell.m_mapAttrs.find("se") != cell.m_mapAttrs.end() && "true" == cell.m_mapAttrs["se"])
 			{
 				std::vector<TString> vecParam;
 				vecParam.push_back(yspzmc);
 
-				//Ó¡»¨Ë°µÄÁÐµ±Íê³ÉÉê±¨ºóÓÉ¸¡¶¯ÐÐ±ä³É¹Ì¶¨ÐÐ
+				//Ó¡ï¿½ï¿½Ë°ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½ê±¨ï¿½ï¿½ï¿½É¸ï¿½ï¿½ï¿½ï¿½Ð±ï¿½É¹Ì¶ï¿½ï¿½ï¿½
 				if (m_spCurrentTaskGroup->m_strGroupId == _T("ZHEJIANGDS_YHS_SBB"))
 				{
 					int col = atoi(column.c_str()) - 1;
@@ -216,7 +216,7 @@ void CDsSejc::SeJc()
 
 				if (!ExcuteJsFunc(EID_STATE_TAX_OPENED_TABLE, TEXT("YzfGetCellValue"), vecParam, strWebValue))
 				{
-					CStringUtils::Format(strMsg, "µ¥Ôª¸ñ¡¾%s¡¿È¡Öµ´íÎó:¡¾%s¡¿", TaxName.c_str(), strWebValue.c_str());
+					CStringUtils::Format(strMsg, "ï¿½ï¿½Ôªï¿½ï¿½%sï¿½ï¿½È¡Öµï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½%sï¿½ï¿½", TaxName.c_str(), strWebValue.c_str());
 					LOG_FUNC_ERR("%s", strMsg.c_str());
 					NotifyDone(ExcuteFailed, strMsg);
 					return;
@@ -226,8 +226,8 @@ void CDsSejc::SeJc()
 		}
 		if (strWebValue == "")
 		{
-			LOG_FUNC_INFO("»ñÈ¡Ë°¾ÖË°¶îÖµÎª¿Õ£¬Çë¼ì²é£¡");
-			NotifyDone(ExcuteFailedUser, "»ñÈ¡Ë°¾ÖË°¶îÖµÎª¿Õ£¬Çë¼ì²é£¡", false, true);
+			LOG_FUNC_INFO("ï¿½ï¿½È¡Ë°ï¿½ï¿½Ë°ï¿½ï¿½ÖµÎªï¿½Õ£ï¿½ï¿½ï¿½ï¿½é£¡");
+			NotifyDone(ExcuteFailedUser, "ï¿½ï¿½È¡Ë°ï¿½ï¿½Ë°ï¿½ï¿½ÖµÎªï¿½Õ£ï¿½ï¿½ï¿½ï¿½é£¡", false, true);
 			return;
 		}
 
@@ -241,8 +241,8 @@ void CDsSejc::SeJc()
 			m_iCheckCount++;
 			if (m_iCheckCount >= 5)
 			{
-				LOG_FUNC_INFO("Ã»ÓÐ¼ì²âµ½¹Ø¼üÔªËØ£¬ÎÞ·¨»ñÈ¡Ë°¾ÖË°¶î");
-				NotifyDone(ExcuteFailed, _T("Ã»ÓÐ¼ì²âµ½¹Ø¼üÔªËØ£¬ÎÞ·¨»ñÈ¡Ë°¾ÖË°¶î"));
+				LOG_FUNC_INFO("Ã»ï¿½Ð¼ï¿½âµ½ï¿½Ø¼ï¿½Ôªï¿½Ø£ï¿½ï¿½Þ·ï¿½ï¿½ï¿½È¡Ë°ï¿½ï¿½Ë°ï¿½ï¿½");
+				NotifyDone(ExcuteFailed, _T("Ã»ï¿½Ð¼ï¿½âµ½ï¿½Ø¼ï¿½Ôªï¿½Ø£ï¿½ï¿½Þ·ï¿½ï¿½ï¿½È¡Ë°ï¿½ï¿½Ë°ï¿½ï¿½"));
 				return;
 			}
 			GetWebState(EID_STATE_TAX_OPENED_TABLE)->Refresh();
@@ -261,7 +261,7 @@ void CDsSejc::SeJc()
 			{
 				TString &strId = cell.m_strAttrName;
 				TString fz, zspm, zszm, strCol;
-				fz = "ºÏ¼Æ";
+				fz = "ï¿½Ï¼ï¿½";
 				strCol = strId;
 				TString rtnJson;
 				if (!ExecScriptString(EID_STATE_TAX_OPENED_TABLE, rtnJson, TEXT("BlankCell_Value_Get_Shbx"), fz, zspm, zszm, strCol))
@@ -271,8 +271,8 @@ void CDsSejc::SeJc()
 				strWebValue = CJsonTools::GetJsonVal(rtnJson, "value");
 				if (strWebValue == "")
 				{
-					LOG_FUNC_INFO("»ñÈ¡Ë°¾ÖË°¶îÖµÎª¿Õ£¬Çë¼ì²é£¡");
-					NotifyDone(ExcuteFailedUser, "»ñÈ¡Ë°¾ÖË°¶îÖµÎª¿Õ£¬Çë¼ì²é£¡", false, true);
+					LOG_FUNC_INFO("ï¿½ï¿½È¡Ë°ï¿½ï¿½Ë°ï¿½ï¿½ÖµÎªï¿½Õ£ï¿½ï¿½ï¿½ï¿½é£¡");
+					NotifyDone(ExcuteFailedUser, "ï¿½ï¿½È¡Ë°ï¿½ï¿½Ë°ï¿½ï¿½ÖµÎªï¿½Õ£ï¿½ï¿½ï¿½ï¿½é£¡", false, true);
 					return;
 				}
 				break;
@@ -288,8 +288,8 @@ void CDsSejc::SeJc()
 			m_iCheckCount++;
 			if (m_iCheckCount >= 5)
 			{
-				LOG_FUNC_INFO("Ã»ÓÐ¼ì²âµ½¹Ø¼üÔªËØ£¬ÎÞ·¨»ñÈ¡Ë°¾ÖË°¶î");
-				NotifyDone(ExcuteFailed, _T("Ã»ÓÐ¼ì²âµ½¹Ø¼üÔªËØ£¬ÎÞ·¨»ñÈ¡Ë°¾ÖË°¶î"));
+				LOG_FUNC_INFO("Ã»ï¿½Ð¼ï¿½âµ½ï¿½Ø¼ï¿½Ôªï¿½Ø£ï¿½ï¿½Þ·ï¿½ï¿½ï¿½È¡Ë°ï¿½ï¿½Ë°ï¿½ï¿½");
+				NotifyDone(ExcuteFailed, _T("Ã»ï¿½Ð¼ï¿½âµ½ï¿½Ø¼ï¿½Ôªï¿½Ø£ï¿½ï¿½Þ·ï¿½ï¿½ï¿½È¡Ë°ï¿½ï¿½Ë°ï¿½ï¿½"));
 				return;
 			}
 			GetWebState(EID_STATE_TAX_OPENED_TABLE)->Refresh();
@@ -314,17 +314,17 @@ void CDsSejc::SeJc()
 		}
 		if (strSe.empty())
 		{
-			LOG_FUNC_INFO("ÒÑÉê±¨µ«ÊÇÎ´¼ì²éµ½ÈÎÎñ±¨ÎÄÖÐµÄË°¶îÊôÐÔ£¬ÎÞ·¨½øÐÐÉê±¨Ë°¶îÐ£Ñé£¬Çë¼ì²é±¨±í£¡");
-			NotifyDone(ExcuteFailedUser, "ÒÑÉê±¨µ«ÊÇÎ´¼ì²éµ½ÈÎÎñ±¨ÎÄÖÐµÄË°¶îÊôÐÔ£¬ÎÞ·¨½øÐÐÉê±¨Ë°¶îÐ£Ñé£¬Çë¼ì²é±¨±í£¡");
+			LOG_FUNC_INFO("ï¿½ï¿½ï¿½ê±¨ï¿½ï¿½ï¿½ï¿½Î´ï¿½ï¿½éµ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½Ë°ï¿½ï¿½ï¿½ï¿½ï¿½Ô£ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê±¨Ë°ï¿½ï¿½Ð£ï¿½é£¬ï¿½ï¿½ï¿½é±¨ï¿½ï¿½ï¿½ï¿½");
+			NotifyDone(ExcuteFailedUser, "ï¿½ï¿½ï¿½ê±¨ï¿½ï¿½ï¿½ï¿½Î´ï¿½ï¿½éµ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½Ë°ï¿½ï¿½ï¿½ï¿½ï¿½Ô£ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê±¨Ë°ï¿½ï¿½Ð£ï¿½é£¬ï¿½ï¿½ï¿½é±¨ï¿½ï¿½ï¿½ï¿½");
 			return;
 		}
 
-		LOG_FUNC_INFO("ÒÑÉê±¨Ð£Ñé:»ñÈ¡Ë°¾ÖÓ¦²¹ÍËË°¶îÖµ");
+		LOG_FUNC_INFO("ï¿½ï¿½ï¿½ê±¨Ð£ï¿½ï¿½:ï¿½ï¿½È¡Ë°ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½Ë°ï¿½ï¿½Öµ");
 		GetInnerText(EID_STATE_TAX_OPENED_TABLE, "#bqybtse_hj", strWebValue);
 		if (strWebValue == "")
 		{
-			LOG_FUNC_INFO("»ñÈ¡Ë°¾ÖË°¶îÖµÎª¿Õ£¬Çë¼ì²é£¡");
-			NotifyDone(ExcuteFailedUser, "»ñÈ¡Ë°¾ÖË°¶îÖµÎª¿Õ£¬Çë¼ì²é£¡", false, true);
+			LOG_FUNC_INFO("ï¿½ï¿½È¡Ë°ï¿½ï¿½Ë°ï¿½ï¿½ÖµÎªï¿½Õ£ï¿½ï¿½ï¿½ï¿½é£¡");
+			NotifyDone(ExcuteFailedUser, "ï¿½ï¿½È¡Ë°ï¿½ï¿½Ë°ï¿½ï¿½ÖµÎªï¿½Õ£ï¿½ï¿½ï¿½ï¿½é£¡", false, true);
 			return;
 		}
 		ComPareSe(strWebValue, strSe);
@@ -339,21 +339,21 @@ void CDsSejc::ComPareSe(TString strWebValue, TString strValue)
 
 	double dMoney;
 
-	if (strValue != "")  //Èë²ÎÖÐÓÐXMLË°¶î
+	if (strValue != "")  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½XMLË°ï¿½ï¿½
 	{
 		dMoney = atof(boost::erase_all_copy(strValue, ",").c_str());
 	}
-	else     //Èë²ÎÖÐÎÞXMLË°¶î£¬ÔòÈ¥XMLÎÄ¼þÖÐ»ñÈ¡
+	else     //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½XMLË°ï¿½î£¬ï¿½ï¿½È¥XMLï¿½Ä¼ï¿½ï¿½Ð»ï¿½È¡
 	{
 		if (!m_spCurrentTaskGroup->GetDeclareMoney(dMoney))
 		{
-			LOG_FUNC_INFO("ÒÑÉê±¨£¬xmlÀïÃæÃ»ÓÐË°¶îÊôÐÔ£¬ÎÞ·¨½øÐÐÉê±¨Ë°¶îÐ£Ñé");
-			NotifyDone(ExcuteFailed, "ÒÑÉê±¨£¬xmlÀïÃæÃ»ÓÐË°¶îÊôÐÔ£¬ÎÞ·¨½øÐÐÉê±¨Ë°¶îÐ£Ñé");
+			LOG_FUNC_INFO("ï¿½ï¿½ï¿½ê±¨ï¿½ï¿½xmlï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½Ë°ï¿½ï¿½ï¿½ï¿½ï¿½Ô£ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê±¨Ë°ï¿½ï¿½Ð£ï¿½ï¿½");
+			NotifyDone(ExcuteFailed, "ï¿½ï¿½ï¿½ê±¨ï¿½ï¿½xmlï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½Ë°ï¿½ï¿½ï¿½ï¿½ï¿½Ô£ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê±¨Ë°ï¿½ï¿½Ð£ï¿½ï¿½");
 			return;
 		}
 	}
 
-	LOG_FUNC_INFO("±¨ÎÄÖÐ»ñÈ¡Ë°¿î×Ü¶î£º¡¾%.2lf¡¿,ÍøÕ¾»ñÈ¡Ë°¿î×Ü¶î£º¡¾%.2lf¡¿", dMoney, lfMoney);
+	LOG_FUNC_INFO("ï¿½ï¿½ï¿½ï¿½ï¿½Ð»ï¿½È¡Ë°ï¿½ï¿½ï¿½Ü¶î£ºï¿½ï¿½%.2lfï¿½ï¿½,ï¿½ï¿½Õ¾ï¿½ï¿½È¡Ë°ï¿½ï¿½ï¿½Ü¶î£ºï¿½ï¿½%.2lfï¿½ï¿½", dMoney, lfMoney);
     double err =  1e-6;
     if (m_spCurrentTaskGroup->m_strGroupId == _T("ZHEJIANGDS_SBDWJFR_SBB"))
     {
@@ -361,9 +361,9 @@ void CDsSejc::ComPareSe(TString strWebValue, TString strValue)
     }
 	if (std::abs(dMoney - lfMoney) > err)
 	{
-		// Ë°¶îÐ£Ñé²»Ò»ÖÂ.
+		// Ë°ï¿½ï¿½Ð£ï¿½é²»Ò»ï¿½ï¿½.
 		TString strMsg;
-		CStringUtils::Format(strMsg, "¸ÃË°ÖÖÒÑÉê±¨£¬µ«Ë°¾ÖË°¶îÓëÔÆÕÊ·¿²»Ò»ÖÂ£¬ÔÆÕÊ·¿Öµ£º¡¾%.2lf¡¿£¬Ë°¾ÖÖµ£º¡¾%.2lf¡¿,ÇëºËÊµ£¡", dMoney, lfMoney);
+		CStringUtils::Format(strMsg, "ï¿½ï¿½Ë°ï¿½ï¿½ï¿½ï¿½ï¿½ê±¨ï¿½ï¿½ï¿½ï¿½Ë°ï¿½ï¿½Ë°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê·ï¿½ï¿½ï¿½Ò»ï¿½Â£ï¿½ï¿½ï¿½ï¿½Ê·ï¿½Öµï¿½ï¿½ï¿½ï¿½%.2lfï¿½ï¿½ï¿½ï¿½Ë°ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½%.2lfï¿½ï¿½,ï¿½ï¿½ï¿½Êµï¿½ï¿½", dMoney, lfMoney);
 		LOG_FUNC_INFO("%s", strMsg.c_str());
 		NotifyDone(ExcuteFailedUser, strMsg);
 	}
@@ -371,13 +371,13 @@ void CDsSejc::ComPareSe(TString strWebValue, TString strValue)
 	{
         if (m_spCurrentTaskGroup->m_strGroupId == _T("ZHEJIANGDS_SBDWJFR_SBB"))
         {
-            LOG_FUNC_INFO("»ØÐ´Éç±£¡¾±¾ÆÚÓ¦½É·Ñ¶î¡¿¡¾%s¡¿", strWebValue.c_str()); 
+            LOG_FUNC_INFO("ï¿½ï¿½Ð´ï¿½ç±£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½É·Ñ¶î¡¿ï¿½ï¿½%sï¿½ï¿½", strWebValue.c_str()); 
             BOOST_FOREACH(auto& Cell, m_pTaskCtrl->GetCurrentTaskItem()->m_vecWriteCells)
             {
                 Cell.m_strValue = strWebValue; 
                 if(Cell.m_mapAttrs.find("change")!= Cell.m_mapAttrs.end())
                 {
-                    LOG_FUNC_INFO("change ÓÉ0¸ÄÎª1");
+                    LOG_FUNC_INFO("change ï¿½ï¿½0ï¿½ï¿½Îª1");
                     Cell.m_mapAttrs["change"] = "1";
                 }
             }
@@ -396,16 +396,16 @@ void CDsSejc::ComPareSe(TString strWebValue, TString strValue)
 
 void CDsSejc::RetryOpertaion(TString strMsg)
 {
-	//ÖØÐÂÖ´ÐÐÈÎÎñÔòÐèÒª½«²ÎÊý»Ö¸´µ½³õÊ¼×´Ì¬
+	//ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼×´Ì¬
 	LOG_FUNC_INFO("%s", strMsg);
 	if (m_iRetryOperation++ < MAX_RETRY)
 	{
 		m_bflag = false;
-		LOG_FUNC_INFO("µÚ%d´Î»Øµ½Ö÷Ò³ÃæÖØÐÂ´ò¿ªË°±í½øÐÐË°¶îÐ£Ñé", m_iRetryOperation);
+		LOG_FUNC_INFO("ï¿½ï¿½%dï¿½Î»Øµï¿½ï¿½ï¿½Ò³ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½Ë°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë°ï¿½ï¿½Ð£ï¿½ï¿½", m_iRetryOperation);
 		__super::TaskBegin();
 	}
 	else
 	{
-		NotifyDone(ExcuteFailed, "ÇëÖØÐÂÏÂ·¢ÈÎÎñ!" + strMsg, false, true);
+		NotifyDone(ExcuteFailed, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½!" + strMsg, false, true);
 	}
 }

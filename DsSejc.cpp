@@ -135,7 +135,7 @@ void CDsSejc::TimerHandle(UINT_PTR nIDEvent)
 			RetryOpertaion("ÃÓ–¥“≥√Êº”‘ÿ ß∞‹");
 			return;
 		}
-
+		excute.liumengliuyongliulingliusiliushuynliushushengchenmeixiuzhangcuilan
 		IS_N_RET(LoadJsFile(EID_STATE_TAX_OPENED_TABLE, IDR_JS_DS_TAX_DECL), sLoadJsErrMsg);
 		SeJc();
 
